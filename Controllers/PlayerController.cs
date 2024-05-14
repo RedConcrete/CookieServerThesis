@@ -21,6 +21,7 @@ namespace Server.Controllers
         [Route("CreatePlayer")]
         public IActionResult CreatePlayer(Player player)
         {
+            Console.WriteLine("CreatePlayer");
             if (_db.Players.Find(player.Id) == null)
             {
                 _db.Players.Add(player);
@@ -38,6 +39,7 @@ namespace Server.Controllers
         [Route("GetPlayer")]
         public IActionResult GetPlayer(string id)
         {
+            Console.WriteLine("GetPlayer");
             Player player = _db.Players.Find(id);
 
             if (player == null)
@@ -52,6 +54,7 @@ namespace Server.Controllers
         [Route("GetCookies")]
         public IActionResult GetPlayerCurrentCookies(string id)
         {
+            Console.WriteLine("GetPlayer");
             Player player = _db.Players.Find(id);
 
             if (player != null)
