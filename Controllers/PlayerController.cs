@@ -16,7 +16,6 @@ namespace Server.Controllers
             _db = context;
         }
 
-
         [HttpPost]
         [Route("CreatePlayer")]
         public IActionResult CreatePlayer(Player player)
@@ -34,7 +33,6 @@ namespace Server.Controllers
             }
         }
 
-
         [HttpGet]
         [Route("GetPlayer")]
         public IActionResult GetPlayer(string id)
@@ -48,23 +46,6 @@ namespace Server.Controllers
             }
 
             return Ok(player);
-        }
-
-        [HttpGet]
-        [Route("GetCookies")]
-        public IActionResult GetPlayerCurrentCookies(string id)
-        {
-            Console.WriteLine("GetPlayer");
-            Player player = _db.Players.Find(id);
-
-            if (player != null)
-            {
-                return Ok(player.Cookies);
-            }
-            else
-            {
-                return NotFound("Es gibt keinen Player!");
-            }
         }
     }
 }
