@@ -20,7 +20,8 @@ namespace Server.Migrations
                     Flour = table.Column<int>(type: "integer", nullable: false),
                     Eggs = table.Column<int>(type: "integer", nullable: false),
                     Butter = table.Column<int>(type: "integer", nullable: false),
-                    Chocolate = table.Column<int>(type: "integer", nullable: false)
+                    Chocolate = table.Column<int>(type: "integer", nullable: false),
+                    Milk = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

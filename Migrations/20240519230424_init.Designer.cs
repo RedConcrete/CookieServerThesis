@@ -11,7 +11,7 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(ServerContext))]
-    [Migration("20240513202248_init")]
+    [Migration("20240519230424_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -42,6 +42,9 @@ namespace Server.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("Flour")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Milk")
                         .HasColumnType("integer");
 
                     b.Property<int>("Sugar")

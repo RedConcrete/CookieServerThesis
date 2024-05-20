@@ -41,6 +41,9 @@ namespace Server.Migrations
                     b.Property<int>("Flour")
                         .HasColumnType("integer");
 
+                    b.Property<int>("Milk")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Sugar")
                         .HasColumnType("integer");
 
