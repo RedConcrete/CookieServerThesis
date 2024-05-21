@@ -4,6 +4,8 @@ using Server.Data;
 using System.Diagnostics;
 using System.Text;
 using Newtonsoft.Json;
+using System.Numerics;
+using System.Collections;
 
 namespace Server.Controllers
 {
@@ -14,7 +16,8 @@ namespace Server.Controllers
 
         private readonly ServerContext _db;
 
-        public ServerController(ServerContext context)
+
+        public ServerController(ServerContext context, Market market)
         {
             _db = context;
         }
@@ -48,6 +51,28 @@ namespace Server.Controllers
             }
             return Ok(player);
         }
+
+        [HttpGet]
+        [Route("GetMarket")]
+        public IActionResult GetMarket()
+        {
+
+            List<Market> allMarkets = _db.Markets.ToList();
+
+            foreach (var market in allMarkets)
+            {
+                Console.WriteLine("Markt: " + market);
+            }
+
+            if (allMarkets == null)
+            {
+                return NotFound("Marktinformationen nicht gefunden!");
+            }
+
+            return Ok(allMarkets);
+
+        }
+
 
         [HttpPut]
         [Route("UpdatePlayer")]

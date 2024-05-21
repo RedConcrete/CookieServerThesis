@@ -11,7 +11,7 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(ServerContext))]
-    [Migration("20240519230424_init")]
+    [Migration("20240521222256_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -23,6 +23,34 @@ namespace Server.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Server.Data.Market", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ButterPrice")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ChocolatePrice")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EggsPrice")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FlourPrice")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MilkPrice")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SugarPrice")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Markets");
+                });
 
             modelBuilder.Entity("Server.Data.Player", b =>
                 {

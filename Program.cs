@@ -1,22 +1,22 @@
-using Server;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.InMemory;
 using Server.Data;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using System;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-var Configuration = builder.Configuration;
+
+// Register the DbContext with the PostgreSQL connection string
 builder.Services.AddDbContext<ServerContext>(options =>
-        options.UseNpgsql(Configuration.GetConnectionString("CookieDatabase")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("CookieDatabase")));
+
+builder.Services.AddSingleton<Market>();
+
+// Register the MarketPriceService
+builder.Services.AddHostedService<MarketPriceService>();
 
 var app = builder.Build();
 
