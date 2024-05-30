@@ -17,7 +17,7 @@ namespace Server.Controllers
         private readonly ServerContext _db;
 
 
-        public ServerController(ServerContext context, Market market)
+        public ServerController(ServerContext context)
         {
             _db = context;
         }
@@ -52,6 +52,24 @@ namespace Server.Controllers
             return Ok(player);
         }
 
+        [HttpPut]
+        [Route("UpdatePlayer")]
+        public IActionResult UpdatePlayer(Player player)
+        {
+            Console.WriteLine($"Player {player.Id} ---------------------------------------------------------------------------------");
+            Player playerFromDB = _db.Players.Find(player.Id);
+
+            if (playerFromDB == null)
+            {
+                return NotFound();
+            }
+
+            playerFromDB.UpdatePlayer(player);
+
+            _db.SaveChanges();
+            return Ok("Update player successfully");
+        }
+
         [HttpGet]
         [Route("GetMarket")]
         public IActionResult GetMarket()
@@ -73,23 +91,52 @@ namespace Server.Controllers
 
         }
 
-
-        [HttpPut]
-        [Route("UpdatePlayer")]
-        public IActionResult UpdatePlayer(Player player)
+        [HttpPost]
+        [Route("Buy")]
+        public IActionResult Buy(Player player, int amount, string rec, Market market)
         {
-            Console.WriteLine($"Player {player.Id} ---------------------------------------------------------------------------------");
             Player playerFromDB = _db.Players.Find(player.Id);
-
-            if (playerFromDB == null)
+            if (playerFromDB != null)
             {
-                return NotFound();
+                if (playerFromDB.Buy(amount, rec, market))
+                {
+                    playerFromDB.UpdatePlayer(player);
+                    return Ok(playerFromDB.Cookies + "");
+                }
+                else
+                {
+                    return Conflict("Resource nicht gefunden");
+                }
             }
-
-            playerFromDB.UpdatePlayer(player);
-
-            _db.SaveChanges();
-            return Ok("Update player successfully");
+            else
+            {
+                return Conflict("Dieser Spieler Exestiert nicht");
+            }
         }
+
+        [HttpPost]
+        [Route("Sell")]
+        public IActionResult Sell(Player player, int amount, string rec, Market market)
+        {
+            Player playerFromDB = _db.Players.Find(player.Id);
+            if (playerFromDB != null)
+            {
+                if (playerFromDB.Sell(amount, rec, market))
+                {
+                    playerFromDB.UpdatePlayer(player);
+                    return Ok(playerFromDB.Cookies + "");
+                }
+                else
+                {
+                    return Conflict("Resource nicht gefunden");
+                }
+            }
+            else
+            {
+                return Conflict("Dieser Spieler Exestiert nicht");
+            }
+        }
+
+
     }
 }

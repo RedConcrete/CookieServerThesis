@@ -6,6 +6,7 @@ namespace Server.Data
     public class Player
     {
         public string Id { get; set; }
+        // private string id; SQL Injektion
         public int Cookies { get; set; }
         public int Sugar { get; set; }
         public int Flour { get; set; }
@@ -29,58 +30,84 @@ namespace Server.Data
             this.Milk = player.Milk;
         }
 
-        public void Buy(int amount, string resource)
+        public Boolean Buy(int amount, string resource, Market market)
         {
             switch (resource.ToLower())
             {
                 case "sugar":
                     Sugar += amount;
+                    Cookies = Cookies - market.SugarPrice;
+                    return true;
                     break;
                 case "flour":
                     Flour += amount;
+                    Cookies = Cookies - market.FlourPrice;
+                    return true;
                     break;
                 case "eggs":
                     Eggs += amount;
+                    Cookies = Cookies - market.EggsPrice;
+                    return true;
                     break;
                 case "butter":
                     Butter += amount;
+                    Cookies = Cookies - market.ButterPrice;
+                    return true;
                     break;
                 case "chocolate":
                     Chocolate += amount;
+                    Cookies = Cookies - market.ChocolatePrice;
+                    return true;
                     break;
                 case "milk":
                     Milk += amount;
+                    Cookies = Cookies - market.MilkPrice;
+                    return true;
                     break;
                 default:
                     Console.WriteLine("Resource nicht gefunden.");
+                    return false;
                     break;
             }
         }
 
-        public void Sell(int amount, string resource)
+        public Boolean Sell(int amount, string resource, Market market)
         {
             switch (resource.ToLower())
             {
                 case "sugar":
                     Sugar -= amount;
+                    Cookies += market.SugarPrice;
+                    return true;
                     break;
                 case "flour":
                     Flour -= amount;
+                    Cookies += market.FlourPrice;
+                    return true;
                     break;
                 case "eggs":
                     Eggs -= amount;
+                    Cookies += market.EggsPrice;
+                    return true;
                     break;
                 case "butter":
                     Butter -= amount;
+                    Cookies += market.ButterPrice;
+                    return true;
                     break;
                 case "chocolate":
                     Chocolate -= amount;
+                    Cookies += market.ChocolatePrice;
+                    return true;
                     break;
                 case "milk":
                     Milk -= amount;
+                    Cookies += market.MilkPrice;
+                    return true;
                     break;
                 default:
                     Console.WriteLine("Resource nicht gefunden.");
+                    return false;
                     break;
             }
         }
