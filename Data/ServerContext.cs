@@ -12,5 +12,7 @@ namespace Server.Data
         public DbSet<Player> Players { get; set; }
         public DbSet<Market> Markets { get; set; }
 
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -15,6 +16,7 @@ namespace Server.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     SugarPrice = table.Column<int>(type: "integer", nullable: false),
                     FlourPrice = table.Column<int>(type: "integer", nullable: false),
                     EggsPrice = table.Column<int>(type: "integer", nullable: false),

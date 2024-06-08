@@ -30,7 +30,7 @@ namespace Server.Data
             this.Milk = player.Milk;
         }
 
-        public Boolean Buy(int amount, string resource, Market market)
+        public Boolean Buy(int amount, string resource, Market market) // market ID damit Client net Cheaten kann!
         {
             switch (resource.ToLower())
             {

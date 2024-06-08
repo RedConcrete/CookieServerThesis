@@ -72,22 +72,19 @@ namespace Server.Controllers
 
         [HttpGet]
         [Route("GetMarket")]
-        public IActionResult GetMarket()
+        public IActionResult GetMarket(int amountToGet)
         {
 
-            List<Market> allMarkets = _db.Markets.ToList();
+            List<Market> marketList = _db.Markets
+                                .OrderByDescending(m => m.Date)
+                                .Take(amountToGet)
+                                .ToList();
 
-            foreach (var market in allMarkets)
-            {
-                Console.WriteLine("Markt: " + market);
-            }
-
-            if (allMarkets == null)
+            if (marketList == null)
             {
                 return NotFound("Marktinformationen nicht gefunden!");
             }
-
-            return Ok(allMarkets);
+            return Ok(marketList);
 
         }
 

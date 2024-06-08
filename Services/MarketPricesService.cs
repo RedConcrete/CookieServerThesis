@@ -11,7 +11,7 @@ namespace Server.Data
     public class MarketPriceService : IHostedService
     {
         private readonly IServiceProvider _serviceProvider;
-        private int updateTime = 60;
+        private int updateTime = 10;
         private Timer _timer;
 
         public MarketPriceService(IServiceProvider serviceProvider)
@@ -44,11 +44,9 @@ namespace Server.Data
                     for (int i = 0; i < 100; i++)
                     {
                         market = new Market();
-                        market.UpdateMarket();
                         _db.Markets.Add(market);
                     }
                 }
-                market.UpdateMarket();
                 _db.Markets.Add(market);
                 await _db.SaveChangesAsync();
             }
