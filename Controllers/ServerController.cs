@@ -6,6 +6,8 @@ using System.Text;
 using Newtonsoft.Json;
 using System.Numerics;
 using System.Collections;
+using Microsoft.AspNetCore.Http.HttpResults;
+using System.Collections.Generic;
 
 namespace Server.Controllers
 {
@@ -42,7 +44,7 @@ namespace Server.Controllers
         [Route("GetPlayer")]
         public IActionResult GetPlayer(string id)
         {
-            Console.WriteLine($"Player {id} **********************************************************************************");
+            // Console.WriteLine($"Player {id} **********************************************************************************");
             Player player = _db.Players.Find(id);
 
             if (player == null)
@@ -56,7 +58,7 @@ namespace Server.Controllers
         [Route("UpdatePlayer")]
         public IActionResult UpdatePlayer(Player player)
         {
-            Console.WriteLine($"Player {player.Id} ---------------------------------------------------------------------------------");
+            // Console.WriteLine($"Player {player.Id} ---------------------------------------------------------------------------------");
             Player playerFromDB = _db.Players.Find(player.Id);
 
             if (playerFromDB == null)
@@ -90,42 +92,64 @@ namespace Server.Controllers
 
         [HttpPost]
         [Route("Buy")]
-        public IActionResult Buy(Player player, int amount, string rec, Market market)
+        public IActionResult Buy(MarketRequest marketRequest)
         {
-            Player playerFromDB = _db.Players.Find(player.Id);
-            if (playerFromDB != null)
-            {
-                if (playerFromDB.Buy(amount, rec, market))
-                {
-                    playerFromDB.UpdatePlayer(player);
-                    return Ok(playerFromDB.Cookies + "");
-                }
-                else
-                {
-                    return Conflict("Resource nicht gefunden");
-                }
-            }
-            else
-            {
-                return Conflict("Dieser Spieler Exestiert nicht");
-            }
+            List<KVN> kvn = _db.KVN
+                                .OrderByDescending(m => m.Date)
+                                .Take(1)
+                                .ToList();
+            
+            return DoMarketAction("buy", marketRequest);
         }
 
         [HttpPost]
         [Route("Sell")]
-        public IActionResult Sell(Player player, int amount, string rec, Market market)
+        public IActionResult Sell(MarketRequest marketRequest)
         {
-            Player playerFromDB = _db.Players.Find(player.Id);
-            if (playerFromDB != null)
+            List<KVN> kvn = _db.KVN
+                                .OrderByDescending(m => m.Date)
+                                .Take(1)
+                                .ToList();
+
+            return DoMarketAction("sell", marketRequest);
+        }
+
+        private IActionResult DoMarketAction(string action, MarketRequest marketRequest)
+        {
+            List<Market> marketList = _db.Markets
+                                .OrderByDescending(m => m.Date)
+                                .Take(1)
+                                .ToList();
+
+            Player player = _db.Players.Find(marketRequest.player);
+            if (player != null)
             {
-                if (playerFromDB.Sell(amount, rec, market))
+
+                if (action == "sell")
                 {
-                    playerFromDB.UpdatePlayer(player);
-                    return Ok(playerFromDB.Cookies + "");
+                    if (player.Sell(player, marketRequest.amount, marketRequest.rec, marketList[0]))
+                    {
+                        player.UpdatePlayer(player);
+                        _db.SaveChanges();
+                        return Ok(player);
+                    }
+                    else
+                    {
+                        return Conflict("Resource nicht gefunden");
+                    }
                 }
                 else
                 {
-                    return Conflict("Resource nicht gefunden");
+                    if (player.Buy(player, marketRequest.amount, marketRequest.rec, marketList[0]))
+                    {
+                        player.UpdatePlayer(player);
+                        _db.SaveChanges();
+                        return Ok(player);
+                    }
+                    else
+                    {
+                        return Conflict("Resource nicht gefunden");
+                    }
                 }
             }
             else
@@ -133,7 +157,5 @@ namespace Server.Controllers
                 return Conflict("Dieser Spieler Exestiert nicht");
             }
         }
-
-
     }
 }

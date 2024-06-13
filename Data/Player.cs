@@ -7,13 +7,13 @@ namespace Server.Data
     {
         public string Id { get; set; }
         // private string id; SQL Injektion
-        public int Cookies { get; set; }
-        public int Sugar { get; set; }
-        public int Flour { get; set; }
-        public int Eggs { get; set; }
-        public int Butter { get; set; }
-        public int Chocolate { get; set; }
-        public int Milk { get; set; }
+        public float Cookies { get; set; }
+        public float Sugar { get; set; }
+        public float Flour { get; set; }
+        public float Eggs { get; set; }
+        public float Butter { get; set; }
+        public float Chocolate { get; set; }
+        public float Milk { get; set; }
 
         public Player()
         {
@@ -30,40 +30,88 @@ namespace Server.Data
             this.Milk = player.Milk;
         }
 
-        public Boolean Buy(int amount, string resource, Market market) // market ID damit Client net Cheaten kann!
+        public Boolean Buy(Player player, int amount, string resource, Market market)
         {
             switch (resource.ToLower())
             {
                 case "sugar":
-                    Sugar += amount;
-                    Cookies = Cookies - market.SugarPrice;
-                    return true;
-                    break;
+                    if (player.Cookies >= market.SugarPrice)
+                    {
+                        Sugar += amount;
+                        player.Cookies = player.Cookies - market.SugarPrice * amount;
+                        return true;
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                        break;
+                    }
                 case "flour":
-                    Flour += amount;
-                    Cookies = Cookies - market.FlourPrice;
-                    return true;
-                    break;
+                    if (player.Cookies >= market.FlourPrice)
+                    {
+                        Flour += amount;
+                        player.Cookies = player.Cookies - market.FlourPrice * amount;
+                        return true;
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                        break;
+                    }
                 case "eggs":
-                    Eggs += amount;
-                    Cookies = Cookies - market.EggsPrice;
-                    return true;
-                    break;
+                    if (player.Cookies >= market.EggsPrice)
+                    {
+                        Eggs += amount;
+                        player.Cookies = player.Cookies - market.EggsPrice * amount;
+                        return true;
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                        break;
+                    }
                 case "butter":
-                    Butter += amount;
-                    Cookies = Cookies - market.ButterPrice;
-                    return true;
-                    break;
+                    if (player.Cookies >= market.ButterPrice)
+                    {
+                        Butter += amount;
+                        player.Cookies = player.Cookies - market.ButterPrice * amount;
+                        return true;
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                        break;
+                    }
                 case "chocolate":
-                    Chocolate += amount;
-                    Cookies = Cookies - market.ChocolatePrice;
-                    return true;
-                    break;
+                    if (player.Cookies >= market.ChocolatePrice)
+                    {
+                        Chocolate += amount;
+                        player.Cookies = player.Cookies - market.ChocolatePrice * amount;
+                        return true;
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                        break;
+                    }
                 case "milk":
-                    Milk += amount;
-                    Cookies = Cookies - market.MilkPrice;
-                    return true;
-                    break;
+                    if (player.Cookies >= market.MilkPrice)
+                    {
+                        Milk += amount;
+                        player.Cookies = player.Cookies - market.MilkPrice * amount;
+                        return true;
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                        break;
+                    }
                 default:
                     Console.WriteLine("Resource nicht gefunden.");
                     return false;
@@ -71,40 +119,88 @@ namespace Server.Data
             }
         }
 
-        public Boolean Sell(int amount, string resource, Market market)
+        public Boolean Sell(Player player, int amount, string resource, Market market)
         {
             switch (resource.ToLower())
             {
                 case "sugar":
-                    Sugar -= amount;
-                    Cookies += market.SugarPrice;
-                    return true;
-                    break;
+                    if (player.Sugar >= amount)
+                    {
+                        Sugar -= amount;
+                        player.Cookies = player.Cookies + market.SugarPrice * amount;
+                        return true;
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                        break;
+                    }
                 case "flour":
-                    Flour -= amount;
-                    Cookies += market.FlourPrice;
-                    return true;
-                    break;
+                    if (player.Flour >= amount)
+                    {
+                        Flour -= amount;
+                        player.Cookies = player.Cookies + market.FlourPrice * amount;
+                        return true;
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                        break;
+                    }
                 case "eggs":
-                    Eggs -= amount;
-                    Cookies += market.EggsPrice;
-                    return true;
-                    break;
+                    if (player.Eggs >= amount)
+                    {
+                        Eggs -= amount;
+                        player.Cookies = player.Cookies + market.EggsPrice * amount;
+                        return true;
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                        break;
+                    }
                 case "butter":
-                    Butter -= amount;
-                    Cookies += market.ButterPrice;
-                    return true;
-                    break;
+                    if (player.Butter >= amount)
+                    {
+                        Butter -= amount;
+                        player.Cookies = player.Cookies + market.ButterPrice * amount;
+                        return true;
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                        break;
+                    }
                 case "chocolate":
-                    Chocolate -= amount;
-                    Cookies += market.ChocolatePrice;
-                    return true;
-                    break;
+                    if (player.Chocolate >= amount)
+                    {
+                        Chocolate -= amount;
+                        player.Cookies = player.Cookies + market.ChocolatePrice * amount;
+                        return true;
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                        break;
+                    }
                 case "milk":
-                    Milk -= amount;
-                    Cookies += market.MilkPrice;
-                    return true;
-                    break;
+                    if (player.Milk >= amount)
+                    {
+                        Milk -= amount;
+                        player.Cookies = player.Cookies + market.MilkPrice * amount;
+                        return true;
+                        break;
+                    }
+                    else
+                    {
+                        return false;
+                        break;
+                    }
                 default:
                     Console.WriteLine("Resource nicht gefunden.");
                     return false;

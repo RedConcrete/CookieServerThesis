@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using System.Numerics;
 
 namespace Server.Data
 {
@@ -33,21 +34,46 @@ namespace Server.Data
 
         private async void UpdateMarketPrices(object state)
         {
-            DateTime dateTime = DateTime.Now;
-            Console.WriteLine(dateTime + ": ----------------------------NEW PRICE-------------------------------");
             using (var scope = _serviceProvider.CreateScope())
             {
                 var _db = scope.ServiceProvider.GetRequiredService<ServerContext>();
-                var market = new Market();
+
+                List<Player> playerList = _db.Players.ToList();
+
+                KVN kvn = new KVN();
+                _db.KVN.Add(kvn);
+                if (_db.Players.ToList().Count != 0)
+                {
+                    kvn.setNs(playerList);
+                }
+                else
+                {
+                    kvn.setNsTo10000();
+                }
+                kvn.setKVs();
+
                 if (_db.Markets.ToList().Count == 0)
                 {
                     for (int i = 0; i < 100; i++)
                     {
-                        market = new Market();
+                        Market market = new Market();
+                        market.SetKVN(kvn);
+                        market.setRandomeMarketPrices();
                         _db.Markets.Add(market);
                     }
                 }
-                _db.Markets.Add(market);
+                else
+                {
+                    List<Market> marketList = _db.Markets
+                                .OrderByDescending(m => m.Date)
+                                .Take(1)
+                                .ToList();
+                    var market = new Market();
+                    market.SetKVN(kvn);
+                    market.setMarketPrices(marketList[0]);
+
+                    _db.Markets.Add(market);
+                }
                 await _db.SaveChangesAsync();
             }
         }
