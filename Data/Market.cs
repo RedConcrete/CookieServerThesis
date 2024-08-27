@@ -17,8 +17,11 @@ namespace Server.Data
         public float MilkPrice { get; set; }
 
         private KVN kvn;
-        private int alpha = 2;
+        private int alpha = 5;
         private Random rand = new Random();
+        private int constantPeriodThreshold = 5;
+        private int constantPeriodCounter = 0;
+        private float lastPrice = 0;
 
         public Market()
         {
@@ -28,26 +31,42 @@ namespace Server.Data
 
         public void setMarketPrices(Market lastMarketItem)
         {
+            float SugarKVNValue = alpha * ((float)kvn.SugarKV / kvn.SugarN);
+            float FlourKVNValue = alpha * ((float)kvn.FlourKV / kvn.FlourN);
+            float EggsKVNValue = alpha * ((float)kvn.EggsKV / kvn.EggsN);
+            float ButterKVNValue = alpha * ((float)kvn.ButterKV / kvn.ButterN);
+            float ChocolateKVNValue = alpha * ((float)kvn.ChocolateKV / kvn.ChocolateN);
+            float MilkKVNValue = alpha * ((float)kvn.MilkKV / kvn.MilkN);
 
-            float SugarKVNValue = (alpha * (kvn.SugarKV / kvn.SugarN));
-            float FlourKVNValue = (alpha * (kvn.FlourKV / kvn.FlourN));
-            float EggsKVNValue = (alpha * (kvn.EggsKV / kvn.EggsN));
-            float ButterKVNValue = (alpha * (kvn.ButterKV / kvn.ButterN));
-            float ChocolateKVNValue = (alpha * (kvn.ChocolateKV / kvn.ChocolateN));
-            float MilkKVNValue = (alpha * (kvn.MilkKV / kvn.MilkN));
+            SugarPrice = AdjustPrice(lastMarketItem.SugarPrice, SugarKVNValue);
+            FlourPrice = AdjustPrice(lastMarketItem.FlourPrice, FlourKVNValue);
+            EggsPrice = AdjustPrice(lastMarketItem.EggsPrice, EggsKVNValue);
+            ButterPrice = AdjustPrice(lastMarketItem.ButterPrice, ButterKVNValue);
+            ChocolatePrice = AdjustPrice(lastMarketItem.ChocolatePrice, ChocolateKVNValue);
+            MilkPrice = AdjustPrice(lastMarketItem.MilkPrice, MilkKVNValue);
+        }
 
-            
+        private float AdjustPrice(float lastPrice, float kvnValue)
+        {
+            float newPrice = Math.Min(1000, Math.Max(1, lastPrice + kvnValue));
 
-            SugarPrice = lastMarketItem.SugarPrice + SugarKVNValue;
-            FlourPrice = lastMarketItem.FlourPrice + FlourKVNValue;
-            EggsPrice = lastMarketItem.EggsPrice + EggsKVNValue;
-            ButterPrice = lastMarketItem.ButterPrice + ButterKVNValue;
-            ChocolatePrice = lastMarketItem.ChocolatePrice + ChocolateKVNValue;
-            MilkPrice = lastMarketItem.MilkPrice + MilkKVNValue;
+            if (Math.Abs(newPrice - lastPrice) < 0.01f)
+            {
+                constantPeriodCounter++;
+            }
+            else
+            {
+                constantPeriodCounter = 0;
+            }
 
-            Console.WriteLine("------------------------------------------------------------------------------------------------------- " + SugarKVNValue.ToString());
-            Console.WriteLine("------------------------------------------------------------------------------------------------------- " + SugarPrice.ToString());
-            Console.WriteLine("------------------------------------------------------------------------------------------------------- " + lastMarketItem.SugarPrice.ToString());
+            if (constantPeriodCounter >= constantPeriodThreshold)
+            {
+                constantPeriodCounter = 0;
+                newPrice += rand.Next(-10, 10);
+                newPrice = Math.Min(1000, Math.Max(1, newPrice));
+            }
+
+            return newPrice;
         }
 
         public void setRandomeMarketPrices()

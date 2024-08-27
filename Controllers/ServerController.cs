@@ -98,8 +98,8 @@ namespace Server.Controllers
                                 .OrderByDescending(m => m.Date)
                                 .Take(1)
                                 .ToList();
-            
-            return DoMarketAction("buy", marketRequest);
+
+            return DoMarketAction("buy", marketRequest, kvn[0]);
         }
 
         [HttpPost]
@@ -111,10 +111,10 @@ namespace Server.Controllers
                                 .Take(1)
                                 .ToList();
 
-            return DoMarketAction("sell", marketRequest);
+            return DoMarketAction("sell", marketRequest, kvn.First());
         }
 
-        private IActionResult DoMarketAction(string action, MarketRequest marketRequest)
+        private IActionResult DoMarketAction(string action, MarketRequest marketRequest, KVN kvn)
         {
             List<Market> marketList = _db.Markets
                                 .OrderByDescending(m => m.Date)
@@ -124,31 +124,32 @@ namespace Server.Controllers
             Player player = _db.Players.Find(marketRequest.player);
             if (player != null)
             {
-
                 if (action == "sell")
                 {
-                    if (player.Sell(player, marketRequest.amount, marketRequest.rec, marketList[0]))
+                    if (player.Sell(player, marketRequest.amount, marketRequest.rec, marketList.First()))
                     {
                         player.UpdatePlayer(player);
+                        kvn.addKVs(false, marketRequest.rec, marketRequest.amount);
                         _db.SaveChanges();
                         return Ok(player);
                     }
                     else
                     {
-                        return Conflict("Resource nicht gefunden");
+                        return Conflict("nicht genug Zutaten");
                     }
                 }
                 else
                 {
-                    if (player.Buy(player, marketRequest.amount, marketRequest.rec, marketList[0]))
+                    if (player.Buy(player, marketRequest.amount, marketRequest.rec, marketList.First()))
                     {
                         player.UpdatePlayer(player);
+                        kvn.addKVs(true, marketRequest.rec, marketRequest.amount);
                         _db.SaveChanges();
                         return Ok(player);
                     }
                     else
                     {
-                        return Conflict("Resource nicht gefunden");
+                        return Conflict("nicht genug Cookies");
                     }
                 }
             }

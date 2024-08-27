@@ -42,15 +42,15 @@ namespace Server.Data
 
                 KVN kvn = new KVN();
                 _db.KVN.Add(kvn);
-                if (_db.Players.ToList().Count != 0)
-                {
-                    kvn.setNs(playerList);
-                }
-                else
+                if (_db.Players.ToList().Count <= 1)
                 {
                     kvn.setNsTo10000();
                 }
-                kvn.setKVs();
+                else
+                {
+                    kvn.setNs(playerList);
+                }
+                kvn.setRandomKVs();
 
                 if (_db.Markets.ToList().Count == 0)
                 {

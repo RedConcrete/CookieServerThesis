@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 
 namespace Server.Data
@@ -17,6 +18,7 @@ namespace Server.Data
 
         public Player()
         {
+            Id = ""; Cookies = 0; Sugar = 0; Flour = 0; Eggs = 0; Butter = 0; Chocolate = 0;
         }
 
         public void UpdatePlayer(Player player)
@@ -35,10 +37,10 @@ namespace Server.Data
             switch (resource.ToLower())
             {
                 case "sugar":
-                    if (player.Cookies >= market.SugarPrice)
+                    if (player.Cookies >= market.SugarPrice * amount)
                     {
                         Sugar += amount;
-                        player.Cookies = player.Cookies - market.SugarPrice * amount;
+                        player.Cookies -= market.SugarPrice * amount;
                         return true;
                         break;
                     }
@@ -48,10 +50,10 @@ namespace Server.Data
                         break;
                     }
                 case "flour":
-                    if (player.Cookies >= market.FlourPrice)
+                    if (player.Cookies >= market.FlourPrice * amount)
                     {
                         Flour += amount;
-                        player.Cookies = player.Cookies - market.FlourPrice * amount;
+                        player.Cookies -= market.FlourPrice * amount;
                         return true;
                         break;
                     }
@@ -61,10 +63,10 @@ namespace Server.Data
                         break;
                     }
                 case "eggs":
-                    if (player.Cookies >= market.EggsPrice)
+                    if (player.Cookies >= market.EggsPrice * amount)
                     {
                         Eggs += amount;
-                        player.Cookies = player.Cookies - market.EggsPrice * amount;
+                        player.Cookies -= market.EggsPrice * amount;
                         return true;
                         break;
                     }
@@ -74,10 +76,10 @@ namespace Server.Data
                         break;
                     }
                 case "butter":
-                    if (player.Cookies >= market.ButterPrice)
+                    if (player.Cookies >= market.ButterPrice * amount)
                     {
                         Butter += amount;
-                        player.Cookies = player.Cookies - market.ButterPrice * amount;
+                        player.Cookies -= market.ButterPrice * amount;
                         return true;
                         break;
                     }
@@ -87,10 +89,10 @@ namespace Server.Data
                         break;
                     }
                 case "chocolate":
-                    if (player.Cookies >= market.ChocolatePrice)
+                    if (player.Cookies >= market.ChocolatePrice * amount)
                     {
                         Chocolate += amount;
-                        player.Cookies = player.Cookies - market.ChocolatePrice * amount;
+                        player.Cookies -= market.ChocolatePrice * amount;
                         return true;
                         break;
                     }
@@ -100,10 +102,10 @@ namespace Server.Data
                         break;
                     }
                 case "milk":
-                    if (player.Cookies >= market.MilkPrice)
+                    if (player.Cookies >= market.MilkPrice * amount)
                     {
                         Milk += amount;
-                        player.Cookies = player.Cookies - market.MilkPrice * amount;
+                        player.Cookies -= market.MilkPrice * amount;
                         return true;
                         break;
                     }
@@ -127,7 +129,7 @@ namespace Server.Data
                     if (player.Sugar >= amount)
                     {
                         Sugar -= amount;
-                        player.Cookies = player.Cookies + market.SugarPrice * amount;
+                        player.Cookies += market.SugarPrice * amount;
                         return true;
                         break;
                     }
@@ -140,7 +142,7 @@ namespace Server.Data
                     if (player.Flour >= amount)
                     {
                         Flour -= amount;
-                        player.Cookies = player.Cookies + market.FlourPrice * amount;
+                        player.Cookies += market.FlourPrice * amount;
                         return true;
                         break;
                     }
@@ -153,7 +155,7 @@ namespace Server.Data
                     if (player.Eggs >= amount)
                     {
                         Eggs -= amount;
-                        player.Cookies = player.Cookies + market.EggsPrice * amount;
+                        player.Cookies += market.EggsPrice * amount;
                         return true;
                         break;
                     }
@@ -166,7 +168,7 @@ namespace Server.Data
                     if (player.Butter >= amount)
                     {
                         Butter -= amount;
-                        player.Cookies = player.Cookies + market.ButterPrice * amount;
+                        player.Cookies += market.ButterPrice * amount;
                         return true;
                         break;
                     }
@@ -179,7 +181,7 @@ namespace Server.Data
                     if (player.Chocolate >= amount)
                     {
                         Chocolate -= amount;
-                        player.Cookies = player.Cookies + market.ChocolatePrice * amount;
+                        player.Cookies += market.ChocolatePrice * amount;
                         return true;
                         break;
                     }
@@ -192,7 +194,7 @@ namespace Server.Data
                     if (player.Milk >= amount)
                     {
                         Milk -= amount;
-                        player.Cookies = player.Cookies + market.MilkPrice * amount;
+                        player.Cookies += market.MilkPrice * amount;
                         return true;
                         break;
                     }
